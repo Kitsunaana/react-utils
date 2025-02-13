@@ -22,8 +22,12 @@ interface IEventCreator<Type extends string = string, Value = unknown> {
   withParams: <Value2>() => IEventCreator<Type, Value2>
   useModal: () => IModalContextProps<Value>
   ModalProvider: ({ children }: IModalProviderProps) => ReactNode
+
   onAfterClose: (callback: () => void) => () => void
+  onAfterOpen: (callback: () => void) => () => void
+
   useOnAfterClose: (callback: () => void) => void
+  useOnAfterOpen: (callback: () => void) => void
 }
 
 export const createModal = <Type extends string = string, Value = void,>(key: Type): IEventCreator<Type, Value> => {
@@ -46,9 +50,7 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
 
   creator.middlewares = {} as Record<string, (() => void)[]>
 
-  creator.onAfterClose = (callback: () => void) => {
-    const name = "afterClose"
-
+  const onEvent = (name: string, callback: () => void) => {
     if (creator.middlewares[name] === undefined) creator.middlewares[name] = [callback]
     else creator.middlewares[name].push(callback)
 
@@ -63,20 +65,34 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
     }
   }
 
-  creator.useOnAfterClose = (callback: () => void) => {
-    useEffect(() => {
-      const event = creator.onAfterClose(callback)
-      return event
-    }, [])
-  }
-
-  creator.emitAfterClose = () => {
-    const name = "afterClose"
-
+  const emitEvent = (name: string) => {
     if (creator.middlewares[name]) {
-      creator.middlewares[name].forEach(callback => callback())
+      creator.middlewares[name]
+        .reverse()
+        .forEach(callback => callback())
     }
   }
+
+  creator.onAfterOpen = (callback: () => void) => onEvent("afterOpen", callback)
+  creator.onAfterClose = (callback: () => void) => onEvent("afterClose", callback)
+
+  creator.useOnAfterClose = (callback: () => void) => (
+    useEffect(
+      () => creator.onAfterClose(callback), 
+      []
+    )
+  )
+
+  creator.useOnAfterOpen = (callback: () => void) => (
+    useEffect(
+      () => creator.onAfterOpen(callback), 
+      []
+    )
+  )
+
+  creator.emitAfterClose = () => emitEvent("afterClose")
+
+  creator.emitAfterOpen = () => emitEvent("afterOpen")
 
   creator.ModalProvider = ({ children }: IModalProviderProps) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -85,11 +101,16 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
     const handleOpen = (payload: Value) => {
       setPayload(payload)
       setIsOpen(true)
+
+      creator.emitAfterOpen()
     }
 
     const handleClose = (resetPayload = true) => {
       setIsOpen(false)
-      if (resetPayload) setPayload(undefined)
+      if (resetPayload) setPayload(() => {
+        console.log("CLEAR")
+        return undefined
+      })
 
       creator.emitAfterClose()
     }
@@ -108,5 +129,5 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
     )
   }
 
-  return creator
+  return creator as unknown as IEventCreator<Type, Value>
 }
