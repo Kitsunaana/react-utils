@@ -12,7 +12,7 @@ export const filesUploadModal = createModal("filesUpload")
   .withParams<File[]>()
 ```
 
-### Провадер
+### Провайдер
 Для того, чтобы модальное окно работало, нужно обернуть компоненту в провайдер, который достаем из объекта модального окна, то есть `filesUploadModal.Provider` 
 
 ```ts
