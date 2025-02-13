@@ -1,6 +1,6 @@
 import { loginModal, registerModal } from "../../../kernel/modals"
 import { BaseModalLayout } from "../../../shared/ui/layouts/base-modal-layout"
-import { Modal } from "../../../shared/ui/modal"
+import { UiModal } from "../../../shared/ui/modal"
 
 export const LoginModal = () => {
   const login = loginModal.useModal()
@@ -8,11 +8,14 @@ export const LoginModal = () => {
 
   const handleStartRegister = () => {
     login.close()
-    register.open()
+    register.open({
+      name: "",
+      password: "",
+    })
   }
 
   return (
-    <Modal
+    <UiModal
       disableBackdropClose
       isOpen={login.isOpen}
       onClose={login.close}

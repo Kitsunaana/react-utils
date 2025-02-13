@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import { App } from "./App"
+import { App, filesUploadModal } from "./App"
 import { loginModal, registerModal } from "./kernel/modals"
 
 import './index.css'
@@ -10,7 +10,9 @@ createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
     <registerModal.ModalProvider>
       <loginModal.ModalProvider>
-        <App />
+        <filesUploadModal.ModalProvider>
+          <App />
+        </filesUploadModal.ModalProvider>
       </loginModal.ModalProvider>
     </registerModal.ModalProvider>
   </QueryClientProvider>

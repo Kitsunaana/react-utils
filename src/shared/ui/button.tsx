@@ -5,7 +5,7 @@ export const UiButton = ({ caption, ...other }: ButtonHTMLAttributes<HTMLButtonE
 }) => {
   return (
     <button
-      className="bg-teal-500 p-2 rounded-md text-white cursor-pointer"  
+      className="disabled:bg-teal-500/50 bg-teal-500 p-2 rounded-md text-white cursor-pointer"  
       {...other}
     >
       {caption}

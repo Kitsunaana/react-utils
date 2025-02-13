@@ -8,7 +8,7 @@ const sleep = (delay = 100) => (
 
 export const useRegisterUseCase = () => {
   const mutation = useMutation({
-    mutationFn: () => sleep(500),
+    mutationFn: () => sleep(1000),
     onSuccess: () => {
       console.log("Success request")
     }
@@ -16,5 +16,6 @@ export const useRegisterUseCase = () => {
 
   return {
     register: mutation.mutate,
+    isLoading: mutation.isPending,
   }
 }

@@ -3,9 +3,7 @@ import { ReactNode } from "react"
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-const ANIMATION_DELAY = 300
-
-export const Modal = ({
+export const UiModal = ({
   isOpen,
   onClose,
   className,
@@ -19,6 +17,8 @@ export const Modal = ({
   renderContent: (onClose: () => void) => ReactNode;
 }) => {
   const [isClosing, setIsClosing] = useState(false)
+  const [isRender, setIsRender] = useState(false)
+
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const handleClose = useCallback(() => {
@@ -27,10 +27,16 @@ export const Modal = ({
     timerRef.current = setTimeout(() => {
       onClose()
       setIsClosing(false)
-    }, ANIMATION_DELAY)
+    }, 300)
   }, [onClose])
 
   useEffect(() => () => clearTimeout(timerRef.current), [isOpen])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsRender(isOpen)
+    })
+  }, [isOpen])
 
   const handleBackdropClose = () => {
     if (!disableBackdropClose) handleClose()
@@ -40,17 +46,21 @@ export const Modal = ({
     event.stopPropagation()
   }
 
+  if (!isOpen) return null
+
   return (
     <div 
       onClick={handleBackdropClose}
-      className={clsx(`opacity-0 invisible duration-[${ANIMATION_DELAY}ms] absolute z-10 top-0 left-0 bg-black/40 h-[100vh] w-[100vw] flex items-center justify-center`, {
-        "opacity-100 visible": isOpen && !isClosing,
+      className={clsx(`opacity-0 invisible duration-300 absolute z-10 top-0 left-0 bg-black/40 h-[100vh] w-[100vw] flex items-center justify-center`, {
+        // "opacity-100 visible": isOpen && !isClosing,
+        "opacity-100 visible": isRender && !isClosing,
       })}
     >
       <div 
         onClick={handleContentClick}
-        className={clsx(`duration-[${ANIMATION_DELAY}ms] bg-white inline-flex p-6 rounded-lg scale-50`, {
-          "scale-100": isOpen && !isClosing,
+        className={clsx(`duration-300 bg-white inline-flex p-6 rounded-lg scale-50`, {
+          // "scale-100": isOpen && !isClosing,
+          "scale-100": isRender && !isClosing,
         }, className)}
       >
         {renderContent(handleClose)}

@@ -2,18 +2,30 @@ import { loginModal, registerModal } from "../../../kernel/modals"
 import { createModal } from "../../../shared/lib/modal-factory"
 import { UiButton } from "../../../shared/ui/button"
 import { BaseModalLayout } from "../../../shared/ui/layouts/base-modal-layout"
-import { Modal } from "../../../shared/ui/modal"
+import { UiModal } from "../../../shared/ui/modal"
 import { useRegisterUseCase } from "./use-register"
 
-export const testRequestModal = createModal()
+export const testRequestModal = createModal("testRequest")
+
+testRequestModal.onAfterClose(() => {
+  console.log("onAfterClose 1")
+})
+
+testRequestModal.onAfterClose(() => {
+  console.log("onAfterClose 2")
+})
 
 export const TestRequestModal = () => {
   const testRequest = testRequestModal.useModal()
 
   const registerUseCase = useRegisterUseCase()
 
+  testRequestModal.useOnAfterClose(() => {
+    console.log(3)
+  })
+
   return (
-    <Modal 
+    <UiModal 
       isOpen={testRequest.isOpen}
       onClose={testRequest.close}
       renderContent={(handleClose) => (
@@ -22,6 +34,7 @@ export const TestRequestModal = () => {
           onClose={handleClose}
           body={(
             <UiButton
+              disabled={registerUseCase.isLoading}
               caption="Выполнить запрос"
               onClick={() => (
                 registerUseCase.register(undefined, {
@@ -41,7 +54,7 @@ export const RegisterModalBody = () => {
 
   return (
     <UiButton
-      onClick={testRequest.open}
+      onClick={() => testRequest.open()}
       caption="Тестовый запрос"
     />
   )
@@ -58,7 +71,7 @@ export const RegisterModal = () => {
 
   return (
     <testRequestModal.ModalProvider>
-      <Modal
+      <UiModal
         disableBackdropClose
         isOpen={register.isOpen}
         onClose={register.close}
