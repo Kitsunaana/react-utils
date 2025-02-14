@@ -1,9 +1,8 @@
 ## Core
 
 ### Создание объекта модального окна
-```js
+```ts
 export const filesUploadModal = createModal("filesUpload")
-  .withParams<File[]>()
 ```
 
 С помощью метода .withParams через generic можно указывать аргументы, которые нужно будет указать при открытии модаьного окна `modal.open()`
@@ -15,7 +14,7 @@ export const filesUploadModal = createModal("filesUpload")
 ### Провайдер
 Для того, чтобы модальное окно работало, нужно обернуть компоненту в провайдер, который достаем из объекта модального окна, то есть `filesUploadModal.Provider` 
 
-```ts
+```tsx
 <filesUploadModal.ModalProvider>
   <App />
 </filesUploadModal.ModalProvider>
@@ -40,7 +39,7 @@ filesUploadModal.onAfterOpen(() => (
 
 События также можно создавать в рамках компоненты, при unmount'е компоненты будет вызвана автоматически функция для отписки от события
 
-```ts
+```tsx
 export const Modal = () => {
   filesUploadModal.useOnAfterOpen(() => console.log("После открытия в компонете"))
 
