@@ -7,12 +7,18 @@ export const LoginModal = () => {
   const register = registerModal.useModal()
 
   const handleStartRegister = () => {
-    login.close()
+    login.close({ hideOpacity: true })
+
     register.open({
       name: "",
       password: "",
+      options: {
+        hideOpacity: true,
+      }
     })
   }
+
+  console.log(login.options.hideOpacity)
 
   return (
     <UiModal
@@ -20,6 +26,7 @@ export const LoginModal = () => {
       isOpen={login.isOpen}
       onClose={login.close}
       className="max-w-[480px] w-full"
+      hideOpacity={login.options.hideOpacity}
       renderContent={(handleClose) => (
         <BaseModalLayout 
           caption="Авторизация"

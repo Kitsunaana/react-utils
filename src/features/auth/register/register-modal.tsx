@@ -38,7 +38,7 @@ export const TestRequestModal = () => {
               caption="Выполнить запрос"
               onClick={() => (
                 registerUseCase.register(undefined, {
-                  onSuccess: testRequest.close
+                  onSuccess: () => testRequest.close()
                 })
               )}
             />
@@ -65,8 +65,13 @@ export const RegisterModal = () => {
   const register = registerModal.useModal()
 
   const handleStartLogin = () => {
-    register.close()
-    login.open()
+    register.close({ hideOpacity: true })
+
+    login.open({
+      options: {
+        hideOpacity: true,
+      },
+    })
   }
 
   return (
@@ -74,7 +79,8 @@ export const RegisterModal = () => {
       <UiModal
         disableBackdropClose
         isOpen={register.isOpen}
-        onClose={register.close}
+        onClose={() => register.close({ hideOpacity: false })}
+        hideOpacity={register.options.hideOpacity}
         className="max-w-[480px] w-full"
         renderContent={(handleClose) => (
           <BaseModalLayout 
