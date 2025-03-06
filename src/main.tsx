@@ -7,15 +7,19 @@ import { App } from './App'
 import './index.css'
 import { queryClient } from './kernel/query-client'
 
+import { ConfirmationsProvider } from "./widgets/confirmations"
+
 
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>
-    <registerModal.ModalProvider>
-      <loginModal.ModalProvider>
-        <filesUploadModal.ModalProvider>
-          <App />
-        </filesUploadModal.ModalProvider>
-      </loginModal.ModalProvider>
-    </registerModal.ModalProvider>
+    <ConfirmationsProvider>
+      <registerModal.ModalProvider>
+        <loginModal.ModalProvider>
+          <filesUploadModal.ModalProvider>
+            <App />
+          </filesUploadModal.ModalProvider>
+        </loginModal.ModalProvider>
+      </registerModal.ModalProvider>
+    </ConfirmationsProvider>
   </QueryClientProvider>
 )

@@ -16,19 +16,20 @@ export const UiModal = ({
   className?: string
   hideOpacity?: boolean;
   disableBackdropClose?: boolean
-  renderContent: (onClose: () => void) => ReactNode;
+  renderContent: (onClose: (callback?: () => void) => void) => ReactNode;
 }) => {
   const [isClosing, setIsClosing] = useState(false)
   const [isRender, setIsRender] = useState(false)
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
-  const handleClose = useCallback(() => {
+  const handleClose = useCallback((callback?: () => void) => {
     setIsClosing(true)
 
     timerRef.current = setTimeout(() => {
       onClose()
       setIsClosing(false)
+      callback?.()
     }, 300)
   }, [onClose])
 

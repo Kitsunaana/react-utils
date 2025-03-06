@@ -80,7 +80,7 @@ export const useFilesUploadLogic = () => {
 | onClose       | Функция, которая должна изменить состояние                                                |
 | renderContent | Render props, который будет отрисовывать содержимое, принимает callback закрывающий окно  |
 | disableBackdropClose? | Не позволяет закрыть окно по нажатию на overlay |
-| className? | Стиля для дополнения |
+| className? | Дополнительные стили |
 
 ```tsx
 export const FilesUploadedModal = () => {
