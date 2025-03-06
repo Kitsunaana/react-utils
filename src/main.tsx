@@ -1,11 +1,12 @@
 import { createRoot } from 'react-dom/client'
-import { App } from "./App"
-import { loginModal, registerModal } from "./kernel/modals"
 import { filesUploadModal } from "./features/files-upload"
+import { loginModal, registerModal } from "./kernel/modals"
 
-import './index.css'
 import { QueryClientProvider } from '@tanstack/react-query'
+import { App } from './App'
+import './index.css'
 import { queryClient } from './kernel/query-client'
+
 
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={queryClient}>

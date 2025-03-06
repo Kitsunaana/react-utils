@@ -1,10 +1,15 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 
+interface IOpenModalOptions {
+  hideOpacity?: boolean
+}
+
 interface IModalContextProps<Value = void> {
   isOpen: boolean
   payload: Value | undefined
   open: (payload: Value) => void
-  close: () => void
+  close: (options?: IOpenModalOptions, resetPayload?: boolean) => void
+  options?: IOpenModalOptions
 }
 
 interface IModalProviderProps {
@@ -14,12 +19,12 @@ interface IModalProviderProps {
 interface IEventType<Type extends string = string, Value = unknown> {
   type: Type
   payload: Value
-} 
+}
 
 interface IEventCreator<Type extends string = string, Value = unknown> {
   (value: Value): IEventType<Type, Value>
   type: Type
-  withParams: <Value2>() => IEventCreator<Type, Value2>
+  withParams: <Value2>() => IEventCreator<Type, Value2 & { options?: IOpenModalOptions }>
   useModal: () => IModalContextProps<Value>
   ModalProvider: ({ children }: IModalProviderProps) => ReactNode
 
@@ -95,22 +100,44 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
   creator.emitAfterOpen = () => emitEvent("afterOpen")
 
   creator.ModalProvider = ({ children }: IModalProviderProps) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [payload, setPayload] = useState<Value>()
+    const [test, setTest] = useState<{
+      isOpen: boolean
+      payload: Value
+      options: IOpenModalOptions
+    }>({
+      isOpen: false,
+      payload: undefined as unknown as Value,
+      options: {
+        hideOpacity: false,
+      }
+    })
 
-    const handleOpen = (payload: Value) => {
-      setPayload(payload)
-      setIsOpen(true)
+    const handleOpen = (payload: Value & {
+      options?: IOpenModalOptions
+    }) => {
+      setTest(prev => ({
+        ...prev,
+        payload: payload as unknown as Value,
+        options: (payload?.options || prev.options) as IOpenModalOptions,
+        isOpen: true
+      }))
 
       creator.emitAfterOpen()
     }
 
-    const handleClose = (resetPayload = true) => {
-      setIsOpen(false)
-      if (resetPayload) setPayload(() => {
-        console.log("CLEAR")
-        return undefined
-      })
+    const handleClose = (
+      options?: IOpenModalOptions,
+      resetPayload = true
+    ) => {
+      setTest(prev => ({
+        ...prev,
+        isOpen: false,
+        payload: resetPayload ? (undefined as unknown as Value) : prev.payload,
+        options: {
+          hideOpacity: false,
+          ...(options || {}),
+        },
+      }))
 
       creator.emitAfterClose()
     }
@@ -118,8 +145,7 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
     return (
       <modalContext.Provider 
         value={{
-          isOpen,
-          payload,
+          ...test,
           open: handleOpen,
           close: handleClose,
         }}
