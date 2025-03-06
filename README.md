@@ -1,3 +1,51 @@
+## Окна подтверждения
+
+### useGetConfirmation
+
+Хук `useGetConfirmation` возвращает асинхронную функцию, которая принимает объект настроек, эти настройки отвечают за то, какой текст выводить для названия, описания и кнопок подтвержения и отмены
+
+Пример использования:
+
+```tsx
+const useGetRemoveUser = () => {
+  const getConfirmatoin = useGetConfirmation()
+
+  return async () => {
+    const confirmation = await getConfirmatoin({
+      title: "Измененный title"
+    })
+
+    if (confirmation) return console.log("Функция для удаления пользователя")
+
+    return console.log("Вы решили его не удалять")
+  }
+}
+
+export const Exmaple = () => {
+  const handleRemoveUser = useGetRemoveUser()
+
+  return (
+      <button
+        onClick={handleRemoveUser}
+        className="bg-red-500 p-2 rounded-md text-white cursor-pointer"
+      >
+        Удалить Kitsunaana
+      </button>
+  )
+}
+```
+
+Для того, чтобы окна подтверждения работали необходимо обернуть корневой компонент в провайдер `ConfirmationsProvider`
+
+```tsx
+createRoot(document.getElementById('root')!).render(
+  <ConfirmationsProvider>
+    <App />
+  </ConfirmationsProvider>
+)
+```
+
+
 ## Core
 
 ### Создание объекта модального окна
