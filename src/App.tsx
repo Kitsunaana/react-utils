@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <div className="flex gap-2 p-2">
       <button 
-        onClick={() => startLogin.open()}
+        onClick={() => startLogin.open({})}
         className="bg-teal-500 p-2 rounded-md text-white cursor-pointer"
       >
         login
@@ -22,7 +22,7 @@ export const App = () => {
         className="bg-teal-500 p-2 rounded-md text-white cursor-pointer"  
         onClick={() => startRegister.open({ 
           name: "alex",
-          password: "password123"
+          password: "password123",
         })}
       >
         register

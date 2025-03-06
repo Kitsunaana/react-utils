@@ -64,14 +64,9 @@ export const RegisterModal = () => {
   const login = loginModal.useModal()
   const register = registerModal.useModal()
 
-  const handleStartLogin = () => {
-    register.close({ hideOpacity: true })
-
-    login.open({
-      options: {
-        hideOpacity: true,
-      },
-    })
+  const handleStartLogin = (handleClose: () => void) => {
+    handleClose()
+    login.open({})
   }
 
   return (
@@ -80,7 +75,7 @@ export const RegisterModal = () => {
         disableBackdropClose
         isOpen={register.isOpen}
         onClose={() => register.close({ hideOpacity: false })}
-        hideOpacity={register.options.hideOpacity}
+        hideOpacity={register.options?.hideOpacity}
         className="max-w-[480px] w-full"
         renderContent={(handleClose) => (
           <BaseModalLayout 
@@ -91,7 +86,7 @@ export const RegisterModal = () => {
               <span className="text-sm text-[#656F77]">
                 Уже есть аккаунт?{" "} 
                 <span
-                  onClick={handleStartLogin} 
+                  onClick={() => handleStartLogin(handleClose)} 
                   className="text-black underline cursor-pointer"
                 >
                   Войти

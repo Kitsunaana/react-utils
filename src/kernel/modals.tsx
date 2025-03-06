@@ -7,4 +7,4 @@ export const registerModal = createModal("register")
  }>()
 
 export const loginModal = createModal("login")
-    .withParams()
+  .withParams()

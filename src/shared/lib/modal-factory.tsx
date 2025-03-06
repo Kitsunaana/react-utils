@@ -9,7 +9,7 @@ interface IModalContextProps<Value = void> {
   payload: Value | undefined
   open: (payload: Value) => void
   close: (options?: IOpenModalOptions, resetPayload?: boolean) => void
-  options: IOpenModalOptions
+  options?: IOpenModalOptions
 }
 
 interface IModalProviderProps {
@@ -24,7 +24,7 @@ interface IEventType<Type extends string = string, Value = unknown> {
 interface IEventCreator<Type extends string = string, Value = unknown> {
   (value: Value): IEventType<Type, Value>
   type: Type
-  withParams: <Value2>() => IEventCreator<Type, Value2 & { options: IOpenModalOptions }>
+  withParams: <Value2>() => IEventCreator<Type, Value2 & { options?: IOpenModalOptions }>
   useModal: () => IModalContextProps<Value>
   ModalProvider: ({ children }: IModalProviderProps) => ReactNode
 
@@ -113,7 +113,7 @@ export const createModal = <Type extends string = string, Value = void,>(key: Ty
     })
 
     const handleOpen = (payload: Value & {
-      options: IOpenModalOptions
+      options?: IOpenModalOptions
     }) => {
       setTest(prev => ({
         ...prev,
